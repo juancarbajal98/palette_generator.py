@@ -126,7 +126,7 @@ class App(object):
      #   print 'undo called'
       #  self.x.itemconfigure(self.cubes[self.clicker_counter-1], fill = 'white')
        # self.clicker_counter -= 1
-        #self.x.update()
+        #self.x.update() vnjkvnfjkbdfnb
     
 if __name__=="__main__":
     root = Tk.Tk()
