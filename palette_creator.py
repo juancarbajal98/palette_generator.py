@@ -17,7 +17,7 @@ where palette picture will appear
 #   - undo and redo buttons 
 #   - button to create PS
 #   - dynamic palette size
-from PIL import Image, ImageTk
+import Image, ImageTk
 import tkinter as Tk
 # needs work
 def resize(img):
@@ -50,7 +50,7 @@ def _from_rgb(rgb):
 class App(object):
     def __init__(self,root,file_name):
         self.file_name = file_name
-        self.PS_counter = 0
+        #self.PS_counter = 0
         # grid length 
         self.grid = 5
         # array to store rgb colors
@@ -113,12 +113,12 @@ class App(object):
             self.x.itemconfigure(self.cubes[self.clicker_counter],fill = _from_rgb((self.colors[self.clicker_counter][0],self.colors[self.clicker_counter][1],self.colors[self.clicker_counter][2])))
             self.clicker_counter += 1
         #once we've clicked enough, we export
-        if (self.clicker_counter == self.grid):
-            self.x.update()
+        #self.clicker_counter == self.grid
+        self.x.update()
             #file_name = self.file_name + "_" + str(self.PS_counter) + ".ps"
-            self.PS_counter += 1
+            #self.PS_counter += 1
             #ps = 
-            self.x.postscript(file=file_name, colormode="color")
+        self.x.postscript(file=file_name, colormode="color")
             #process = subprocess.Popen(["ps2pdf", "tmp.ps", "result.pdf"], shell=True)
             #process.wait()
             #os.remove("tmp.ps")
