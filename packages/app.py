@@ -27,6 +27,7 @@ class App(object):
         self.max_width = 1920
         self.sidebar_height = 0 
         self.sidebar_width = 0 
+        self.padding = 40
 
         # get dimensions from image object
         self.photo = makePhoto(self.file_name)
@@ -51,8 +52,8 @@ class App(object):
         (self.image_height + self.box_height) >= self.max_height and 
         (orientation == 'N' or orientation == 'S' )):
             print('Image height too large - needs resize.')
-            self.image_width = self.ratio * ((self.max_height-40) - self.box_height)
-            self.image_height = (self.max_height-40) - self.box_height
+            self.image_width = self.ratio * ((self.max_height-self.padding) - self.box_height)
+            self.image_height = (self.max_height-self.padding) - self.box_height
             self.box_width = self.image_width / self.grid
             self.photo = resizeImage(self.file_name, self.image_height, self.image_width)
             self.image_rgb = updateRGB(self.file_name, self.image_height, self.image_width)
@@ -61,8 +62,8 @@ class App(object):
         (self.image_width + self.box_width) >= self.max_width and 
         (orientation == 'W' or orientation == 'E' )):
             print('Image width too large - needs resize.')
-            self.image_height = self.ratio * ((self.max_width-40) - self.box_width)
-            self.image_width = (self.max_width-40) - self.box_width
+            self.image_height = self.ratio * ((self.max_width-self.padding) - self.box_width)
+            self.image_width = (self.max_width-self.padding) - self.box_width
             self.box_height = self.image_height / self.grid
             self.photo = resizeImage(self.file_name, self.image_height, self.image_width)
             self.image_rgb = updateRGB(self.file_name, self.image_height, self.image_width)
@@ -71,8 +72,8 @@ class App(object):
         (self.image_height >= (self.max_height-self.sidebar_height)) and 
         (orientation == 'W' or orientation == 'E' )):
             print('Image height too large - needs resize.')
-            self.image_width = self.ratio * ((self.max_height-240) - self.box_height)
-            self.image_height = (self.max_height-240) - self.box_height
+            self.image_width = self.ratio * ((self.max_height-self.sidebar_height-self.padding) - self.box_height)
+            self.image_height = (self.max_height-self.sidebar_height-self.padding) - self.box_height
             self.box_height = self.image_height / self.grid
             self.photo = resizeImage(self.file_name, self.image_height, self.image_width)
             self.image_rgb = updateRGB(self.file_name, self.image_height, self.image_width)
@@ -80,8 +81,8 @@ class App(object):
         (self.image_width >= (self.max_width-self.sidebar_width)) and 
         (orientation == 'S' or orientation == 'N' )):
             print('Image width too large - needs resize.')
-            self.image_height = self.ratio * ((self.max_width-340) - self.box_width)
-            self.image_width = (self.max_width-340) - self.box_width
+            self.image_height = self.ratio * ((self.max_width-self.sidebar_width-self.padding) - self.box_width)
+            self.image_width = (self.max_width-self.sidebar_width-self.padding) - self.box_width
             self.box_width = self.image_width / self.grid
             self.photo = resizeImage(self.file_name, self.image_height, self.image_width)
             self.image_rgb = updateRGB(self.file_name, self.image_height, self.image_width)
