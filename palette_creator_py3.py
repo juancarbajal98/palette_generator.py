@@ -14,8 +14,8 @@ import tkinter as Tk
 if __name__=="__main__":
     file_name = input("Picture file name: ")
     orientation = input("Orientation(N/W/S/E): ")
-    # grid = input("Grid #: ")
+    grid = input("Grid #: ")
     root = Tk.Tk()
-    grid = 5
-    instantiater = App(root,file_name,orientation, grid)
+    #grid = 4
+    instantiater = App(root,file_name,orientation, int(grid))
     root.mainloop()
