@@ -129,7 +129,7 @@ class App(object):
                 self.image_height + 150,
                 tags = "undoButton"
             )
-            self.canvas.create_text(self.image_width + 150, self.image_height - 250, text="Undo", font=("Papyrus", 26), fill='blue',tags = "undoButton")
+            self.canvas.create_text(self.image_width - 250, self.image_height + 100, text="Undo", font=("Papyrus", 26), fill='blue',tags = "undoButton")
             self.canvas.create_rectangle(
                 self.image_width - 150,
                 self.image_height + 50 ,
@@ -202,7 +202,7 @@ class App(object):
                 self.image_height + 150,
                 tags = "undoButton"
             )
-            self.canvas.create_text(self.image_width + 150, self.image_height - 250, text="Undo", font=("Papyrus", 26), fill='blue',tags = "undoButton")
+            self.canvas.create_text(self.image_width - 250, self.image_height + 100, text="Undo", font=("Papyrus", 26), fill='blue',tags = "undoButton")
             self.canvas.create_rectangle(
                 self.image_width - 150,
                 self.image_height + 50 ,
