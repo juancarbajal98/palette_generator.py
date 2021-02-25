@@ -23,6 +23,10 @@ class App(object):
         self.save_counter = 0
         self.grid = grid
         self.orientation = orientation
+        self.max_height = 1080
+        self.max_width = 1920
+        self.sidebar_height = 0 
+        self.sidebar_width = 0 
 
         # get dimensions from image object
         self.photo = makePhoto(self.file_name)
@@ -32,57 +36,59 @@ class App(object):
         self.ratio = float(self.image_width)/self.image_height
         
 
-        # get box dimensions
+        # get box & sidebar dimensions
         if(orientation=='N' or orientation == 'S'):
             self.box_width = self.image_width / self.grid
             self.box_height = 150
+            self.sidebar_width = 300
         elif(orientation=='W' or orientation == 'E'):
             self.box_height = self.image_height / self.grid
             self.box_width = 150
+            self.sidebar_height = 200
         
         # resize
         if(
-        (self.image_height + self.box_height) >= 1080 and 
+        (self.image_height + self.box_height) >= self.max_height and 
         (orientation == 'N' or orientation == 'S' )):
             print('Image height too large - needs resize.')
-            self.image_width = self.ratio * (1040 - self.box_height)
-            self.image_height = 1040 - self.box_height
+            self.image_width = self.ratio * ((self.max_height-40) - self.box_height)
+            self.image_height = (self.max_height-40) - self.box_height
             self.box_width = self.image_width / self.grid
             self.photo = resizeImage(self.file_name, self.image_height, self.image_width)
             self.image_rgb = updateRGB(self.file_name, self.image_height, self.image_width)
 
         if(
-        (self.image_width + self.box_width) >= 1920 and 
+        (self.image_width + self.box_width) >= self.max_width and 
         (orientation == 'W' or orientation == 'E' )):
             print('Image width too large - needs resize.')
-            self.image_height = self.ratio * (1880 - self.box_width)
-            self.image_width = 1880 - self.box_width
+            self.image_height = self.ratio * ((self.max_width-40) - self.box_width)
+            self.image_width = (self.max_width-40) - self.box_width
             self.box_height = self.image_height / self.grid
             self.photo = resizeImage(self.file_name, self.image_height, self.image_width)
             self.image_rgb = updateRGB(self.file_name, self.image_height, self.image_width)
         
         if(
-        (self.image_height >= 880) and 
+        (self.image_height >= (self.max_height-self.sidebar_height)) and 
         (orientation == 'W' or orientation == 'E' )):
             print('Image height too large - needs resize.')
-            self.image_width = self.ratio * (840 - self.box_height)
-            self.image_height = 840 - self.box_height
+            self.image_width = self.ratio * ((self.max_height-240) - self.box_height)
+            self.image_height = (self.max_height-240) - self.box_height
             self.box_height = self.image_height / self.grid
             self.photo = resizeImage(self.file_name, self.image_height, self.image_width)
             self.image_rgb = updateRGB(self.file_name, self.image_height, self.image_width)
         if(
-        (self.image_width >= 1620) and 
+        (self.image_width >= (self.max_width-self.sidebar_width)) and 
         (orientation == 'S' or orientation == 'N' )):
             print('Image width too large - needs resize.')
-            self.image_height = self.ratio * (1580 - self.box_width)
-            self.image_width = 1580 - self.box_width
+            self.image_height = self.ratio * ((self.max_width-340) - self.box_width)
+            self.image_width = (self.max_width-340) - self.box_width
             self.box_width = self.image_width / self.grid
             self.photo = resizeImage(self.file_name, self.image_height, self.image_width)
             self.image_rgb = updateRGB(self.file_name, self.image_height, self.image_width)
         
         #create canvas
         if(orientation=='N'):
-            self.canvas = Tk.Canvas(root, width = self.image_width + 300, height = (self.box_height + self.image_height), bg = 'white')
+            self.canvas = Tk.Canvas(root, width = self.image_width + self.sidebar_width, height = (self.box_height + self.image_height), bg = 'white')
             self.canvas.create_image(0,self.box_height, image = self.photo,anchor='nw', tags = "imageClick")
             
             # undo and save buttons 
@@ -118,7 +124,7 @@ class App(object):
                         self.box_width*(i+1),
                         self.box_height))
         elif(orientation=='W'):
-            self.canvas = Tk.Canvas(root, width = (self.box_width + self.image_width), height = self.image_height + 200 , bg = 'white')
+            self.canvas = Tk.Canvas(root, width = (self.box_width + self.image_width), height = self.image_height + self.sidebar_height , bg = 'white')
             self.canvas.create_image(self.box_width,0, image = self.photo,anchor='nw', tags = "imageClick")
             
             # undo and save buttons 
@@ -154,7 +160,7 @@ class App(object):
                         self.box_width,
                         self.box_height*(i+1)))
         elif(orientation=='S'):
-            self.canvas = Tk.Canvas(root, width = self.image_width + 300, height = (self.box_height + self.image_height), bg = 'white')
+            self.canvas = Tk.Canvas(root, width = self.image_width + self.sidebar_width, height = (self.box_height + self.image_height), bg = 'white')
             self.canvas.create_image(0,0, image = self.photo,anchor='nw',tags = "imageClick")
             
             # undo and save buttons 
@@ -191,7 +197,7 @@ class App(object):
                         self.box_width*(i+1),
                         self.image_height + self.box_height))
         elif(orientation=='E'):
-            self.canvas = Tk.Canvas(root, width = (self.box_width + self.image_width), height = self.image_height + 200 , bg = 'white')
+            self.canvas = Tk.Canvas(root, width = (self.box_width + self.image_width), height = self.image_height + self.sidebar_height , bg = 'white')
             self.canvas.create_image(0,0, image = self.photo,anchor='nw', tags = "imageClick")
             
             # undo and save buttons 
