@@ -21,7 +21,7 @@ class App(object):
         self.file_name = file_name + '.jpg'
         self.cubes = []
         self.colors = []
-        self._counter = 0
+        self.click_counter = 0
         self.save_counter = 0
         # makes canvas 1080 x 1080
         self.max_height = 1080
@@ -53,7 +53,7 @@ class App(object):
 
          # get box dimensions
         if(self.direction=='N' or self.direction == 'S'):
-            self.box_width = (self.image_width+ self.framing) / self.grid
+            self.box_width = ((self.image_width ) / self.grid) - (2* self.framing)
             self.box_height = self.max_height / 4
         elif(self.direction=='W' or self.direction == 'E'):
             self.box_height = self.image_height / self.grid
@@ -65,7 +65,7 @@ class App(object):
         (self.direction == 'N' or self.direction == 'S' )):
             print('Image height too large - needs resize.')
             self.image_width = self.ratio * ((self.max_height-self.padding) - self.box_height)
-            self.image_height = (self.max_height-self.padding) - self.box_height
+            self.image_height = (self.max_height) - self.box_height - self.framing*3
             self.box_width = self.image_width / self.grid
             self.photo = resizeImage(self.file_name, self.image_height, self.image_width)
             self.image_rgb = updateRGB(self.file_name, self.image_height, self.image_width)
@@ -111,50 +111,77 @@ class App(object):
                     self.canvas.create_rectangle(
                         self.box_width*i+self.framing,
                         self.framing,
-                        self.box_width*(i+1),
-                        self.box_height+ self.framing, outline="white"))
+                        self.box_width*(i+1) + self.framing,
+                        self.box_height+ self.framing,
+                         outline="white"))
+            for i in range(self.grid-1):
+                self.canvas.create_rectangle(
+                    self.box_width*(i+1)+self.framing,
+                    self.framing,
+                    self.box_width*(i+1)+(self.framing*2),
+                    self.box_height+ self.framing,
+                    fill="white",
+                    outline = "white"
+                )
         elif(self.direction=='W'):
-            self.canvas.create_image(self.box_width,0, image = self.photo,anchor='nw', tags = "image")
-            
-            # x1, y1, x2, y2
-            for i in range(self.grid):
-                self.canvas.create_line(0,self.box_height*i,self.box_width, self.box_height*i)
-            self.canvas.create_line(self.box_width,0,self.box_width,self.image_height)
+            self.canvas.create_image(self.box_width + (2* self.framing),self.framing, image = self.photo,anchor='nw', tags = "image")
             for i in range(self.grid):
                 self.cubes.append(
                     self.canvas.create_rectangle(
-                        0,
-                        self.box_height*i,
-                        self.box_width,
-                        self.box_height*(i+1)))
-        elif(self.direction=='S'):
-            self.canvas.create_image(0,0, image = self.photo,anchor='nw',tags = "image")
+                        self.framing,
+                        self.box_height*i+self.framing,
+                        self.box_height + self.framing,
+                        self.box_height*(i+1) + self.framing,
+                        outline="white"))
+            for i in range(self.grid-1):
+                self.canvas.create_rectangle(
+                    self.framing,
+                    self.box_height*(i+1)+self.framing,
+                    self.box_width + self.framing,
+                    self.box_height*(i+1)+ self.framing,
+                    fill="white",
+                    outline = "white"
+                )
             
-            # x1, y1, x2, y2
-            for i in range(self.grid):
-                self.canvas.create_line(self.box_width*i,self.image_height,self.box_width*i, (self.image_height + self.box_height))
-            self.canvas.create_line(0,(self.image_height + self.box_height),self.image_width,(self.image_height + self.box_height))
-            for i in range(self.grid):
-                self.cubes.append(
-                    self.canvas.create_rectangle(
-                        self.box_width*i,
-                        self.image_height,
-                        self.box_width*(i+1),
-                        self.image_height + self.box_height))
-        elif(self.direction=='E'):
-            self.canvas.create_image(0,0, image = self.photo,anchor='nw', tags = "image")
+        # elif(self.direction=='E'):
+        #     self.canvas.create_image(self.framing,self.framing, image = self.photo,anchor='nw', tags = "image")
+        #     for i in range(self.grid):
+        #         self.cubes.append(
+        #             self.canvas.create_rectangle(
+        #                 self.box_width*i+self.framing,
+        #                 self.framing,
+        #                 self.box_width*(i+1) + self.framing,
+        #                 self.box_height+ self.framing, outline="white"))
+        #     for i in range(self.grid-1):
+        #         self.canvas.create_rectangle(
+        #             self.box_width*(i+1)+self.framing,
+        #             self.framing,
+        #             self.box_width*(i+1)+(self.framing*2),
+        #             self.box_height+ self.framing,
+        #             fill="white",
+        #             outline = "white"
+        #         )
 
-            # x1, y1, x2, y2
-            for i in range(self.grid):
-                self.canvas.create_line(self.image_width,self.box_height*i,self.image_width+self.box_width, self.box_height*i)
-            self.canvas.create_line(self.image_width,0,self.image_width,self.image_height)
+        elif(self.direction=='S'):
+            self.canvas.create_image(self.framing,self.framing, image = self.photo,anchor='nw', tags = "image")
             for i in range(self.grid):
                 self.cubes.append(
                     self.canvas.create_rectangle(
-                        self.image_width,
-                        self.box_height*i,
-                        self.image_width + self.box_width,
-                        self.box_height*(i+1)))
+                        self.box_width*i+self.framing,
+                        self.image_height+ (2*self.framing),
+                        self.box_width*(i+1) + self.framing,
+                        self.box_height + self.image_height+ (2*self.framing),
+                        outline="white"))
+            for i in range(self.grid-1):
+                self.canvas.create_rectangle(
+                    self.box_width*(i+1)+self.framing,
+                    self.image_height+ (2*self.framing),
+                    self.box_width*(i+1)+(self.framing*2),
+                    self.box_height + self.image_height+ (2*self.framing),
+                    fill="white",
+                    outline = "white"
+                )
+
 
         self.canvas.tag_bind("image",'<Button-1>',
             lambda event, file = self.file_name_stripped:
@@ -175,23 +202,23 @@ class App(object):
             print('out of bounds')
             return
         # check for full palette
-        if (self._counter == self.grid):
+        if (self.click_counter == self.grid):
             print('palette is full')
             return        
         # capture  color 
         if(self.direction =='N'):
             self.colors.append(self.image_rgb.getpixel((event.x,event.y-self.box_height)))
-            self.canvas.itemconfigure(self.cubes[self._counter], fill = _from_rgb((self.colors[self._counter][0],self.colors[self._counter][1],self.colors[self._counter][2])))
+            self.canvas.itemconfigure(self.cubes[self.click_counter], fill = _from_rgb((self.colors[self.click_counter][0],self.colors[self.click_counter][1],self.colors[self.click_counter][2])))
         elif(self.direction == "W"):
             self.colors.append(self.image_rgb.getpixel((event.x-self.box_width,event.y)))
-            self.canvas.itemconfigure(self.cubes[self._counter], fill = _from_rgb((self.colors[self._counter][0],self.colors[self._counter][1],self.colors[self._counter][2])))
+            self.canvas.itemconfigure(self.cubes[self.click_counter], fill = _from_rgb((self.colors[self.click_counter][0],self.colors[self.click_counter][1],self.colors[self.click_counter][2])))
         elif(self.direction == "S"):
             self.colors.append(self.image_rgb.getpixel((event.x,event.y)))
-            self.canvas.itemconfigure(self.cubes[self._counter], fill = _from_rgb((self.colors[self._counter][0],self.colors[self._counter][1],self.colors[self._counter][2])))
+            self.canvas.itemconfigure(self.cubes[self.click_counter], fill = _from_rgb((self.colors[self.click_counter][0],self.colors[self.click_counter][1],self.colors[self.click_counter][2])))
         elif(self.direction == "E"):
             self.colors.append(self.image_rgb.getpixel((event.x,event.y)))
-            self.canvas.itemconfigure(self.cubes[self._counter], fill = _from_rgb((self.colors[self._counter][0],self.colors[self._counter][1],self.colors[self._counter][2])))
+            self.canvas.itemconfigure(self.cubes[self.click_counter], fill = _from_rgb((self.colors[self.click_counter][0],self.colors[self.click_counter][1],self.colors[self.click_counter][2])))
         
         # update position
-        self._counter += 1
+        self.click_counter += 1
             

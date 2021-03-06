@@ -17,6 +17,9 @@ import tkinter as Tk
 if __name__=="__main__":
     file_name = input("Picture file name: ")
     root = Tk.Tk()
+    # root.overrideredirect(True)
+    # # root.initial_focus.focus_set()
+    # root.overrideredirect(False)
     root.withdraw()
     # instantiater = App(root,file_name,orientation, int(grid))
     # initializer only takes root and file 
