@@ -14,6 +14,8 @@ def _from_rgb(rgb):
     """
     return "#%02x%02x%02x" % rgb
 
+# TODO: make image frame appear below (consider smaller square frame), apply logic to E S 
+
 class App(object):
     def __init__(self,file_name):
         # set initial attributes
@@ -56,48 +58,56 @@ class App(object):
             self.box_width = ((self.image_width ) / self.grid) - (2* self.framing)
             self.box_height = self.max_height / 4
         elif(self.direction=='W' or self.direction == 'E'):
-            self.box_height = self.image_height / self.grid
+            self.box_height = ((self.image_height) / self.grid) - (2*self.framing)
             self.box_width = self.max_height / 4
         
-        # resize
+        # resize - TODO: make this iterative (while image dimensions less than frame - should only run twice as much as possible)
         if(
-        (self.image_height + self.box_height) >= self.max_height - (self.framing*3) and 
-        (self.direction == 'N' or self.direction == 'S' )):
-            print('Image height too large - needs resize.')
-            self.image_width = self.ratio * ((self.max_height-self.padding) - self.box_height)
-            self.image_height = (self.max_height) - self.box_height - self.framing*3
+            (self.image_height + self.box_height + (self.framing*3) >= self.max_height) 
+            and 
+            (self.direction == 'N' or self.direction == 'S')
+        ):
+            print('Image too large - needs resize')
+            self.image_width = self.max_height - (2*self.framing) 
+            self.image_height = float(self.image_width) / self.ratio
             self.box_width = self.image_width / self.grid
             self.photo = resizeImage(self.file_name, self.image_height, self.image_width)
             self.image_rgb = updateRGB(self.file_name, self.image_height, self.image_width)
 
+        elif(
+            (self.image_width + (self.framing*2) >= self.max_height)
+            and
+            (self.direction == 'N' or self.direction == 'S')
+        ):
+            print('Image too large - needs resize')
+            self.image_width = self.max_height - (2*self.framing) 
+            self.image_height = float(self.image_width) / self.ratio
+            self.box_width = self.image_width / self.grid
+            self.photo = resizeImage(self.file_name, self.image_height, self.image_width)
+            self.image_rgb = updateRGB(self.file_name, self.image_height, self.image_width)
         if(
-        (self.image_width + self.box_width) >= self.max_height - (self.framing*3) and 
-        (self.direction == 'W' or self.direction == 'E' )):
-            print('Image width too large - needs resize.')
-            self.image_height = self.ratio * ((self.max_width-self.padding) - self.box_width)
-            self.image_width = (self.max_width-self.padding) - self.box_width
+            (self.image_width + self.box_width + (self.framing*3) >= self.max_height)
+            and 
+            (self.direction == 'W' or self.direction == 'E')
+        ):
+            print('Image too large - needs resize')
+            self.image_height = self.max_height - (2*self.framing) 
+            self.image_width = self.ratio * self.image_height
             self.box_height = self.image_height / self.grid
             self.photo = resizeImage(self.file_name, self.image_height, self.image_width)
             self.image_rgb = updateRGB(self.file_name, self.image_height, self.image_width)
-        
-        # if(
-        # (self.image_height >= (self.max_height-self.sidebar_height)) and 
-        # (self.direction == 'W' or self.direction == 'E' )):
-        #     print('Image height too large - needs resize.')
-        #     self.image_width = self.ratio * ((self.max_height-self.sidebar_height-self.padding) - self.box_height)
-        #     self.image_height = (self.max_height-self.sidebar_height-self.padding) - self.box_height
-        #     self.box_height = self.image_height / self.grid
-        #     self.photo = resizeImage(self.file_name, self.image_height, self.image_width)
-        #     self.image_rgb = updateRGB(self.file_name, self.image_height, self.image_width)
-        # if(
-        # (self.image_width >= (self.max_width-self.sidebar_width)) and 
-        # (self.direction == 'S' or self.direction == 'N' )):
-        #     print('Image width too large - needs resize.')
-        #     self.image_height = self.ratio * ((self.max_width-self.sidebar_width-self.padding) - self.box_width)
-        #     self.image_width = (self.max_width-self.sidebar_width-self.padding) - self.box_width
-        #     self.box_width = self.image_width / self.grid
-        #     self.photo = resizeImage(self.file_name, self.image_height, self.image_width)
-        #     self.image_rgb = updateRGB(self.file_name, self.image_height, self.image_width)
+
+        elif(
+            (self.image_height + (self.framing*2) >= self.max_height)
+            and
+            (self.direction == 'W' or self.direction == 'E')
+        ):
+            print('Image too large - needs resize')
+            self.image_height = self.max_height - (2*self.framing) 
+            self.image_width = self.ratio * self.image_height
+            self.box_height = self.image_height / self.grid
+            self.photo = resizeImage(self.file_name, self.image_height, self.image_width)
+            self.image_rgb = updateRGB(self.file_name, self.image_height, self.image_width)
         
         #create canvases for picture and buttons 
         self.canvas = Tk.Canvas(root, width=self.max_height, height = self.max_height, bg = 'white')
@@ -135,8 +145,8 @@ class App(object):
                         outline="white"))
             for i in range(self.grid-1):
                 self.canvas.create_rectangle(
-                    self.framing,
-                    self.box_height*(i+1)+self.framing,
+                    0,
+                    self.box_height*(i+1),
                     self.box_width + self.framing,
                     self.box_height*(i+1)+ self.framing,
                     fill="white",

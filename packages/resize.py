@@ -6,8 +6,6 @@ def resizeImage(file_name,height,width):
         width = round(width)
     image = Image.open(file_name)
     image = image.resize((width,height),Image.LANCZOS)
-
-)
     return ImageTk.PhotoImage(image)
 
 def updateRGB(file_name, height, width):
